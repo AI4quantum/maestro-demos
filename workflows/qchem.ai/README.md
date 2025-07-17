@@ -1,4 +1,4 @@
-# Summary.ai Example
+# Qchem.ai Example
 
 A multi-agent workflow using Maestro: Allows user to retrieve information about a chemical molecule, query quri chemistry, and get a summary of relevant news papers and patents.
 
