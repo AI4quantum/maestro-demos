@@ -1,0 +1,49 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "maestro-demos"
+version = "0.1.0"
+description = "CLI tool for running Maestro meta-agents workflows"
+readme = "README.md"
+license = {text = "Apache-2.0"}
+authors = [
+    {name = "George Liu", email = "george.liu@ibm.com"}
+]
+maintainers = [
+    {name = "George Liu", email = "george.liu@ibm.com"}
+]
+keywords = ["maestro", "ai", "agents", "workflows", "cli"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: Apache Software License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+]
+requires-python = ">=3.11"
+dependencies = [
+    "maestro>=0.2.0",
+    "click>=8.0.0",
+    "pyyaml>=6.0",
+]
+
+[project.scripts]
+maestro-demos = "maestro_demos.cli:main"
+
+[project.urls]
+Homepage = "https://github.com/AI4quantum/maestro-demos"
+Repository = "https://github.com/AI4quantum/maestro-demos"
+Issues = "https://github.com/AI4quantum/maestro-demos/issues"
+
+[tool.setuptools.packages.find]
+where = ["."]
+
+[tool.setuptools.package-data]
+maestro_demos = [
+    "workflows/meta-agents-v2/agents_file_generation/*.yaml",
+    "workflows/meta-agents-v2/workflow_file_generation/*.yaml",
+] 

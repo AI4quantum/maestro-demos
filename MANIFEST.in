@@ -1,0 +1,8 @@
+include README.md
+include LICENSE
+include CONTRIBUTING.md
+include SECURITY.md
+include MAINTAINERS.md
+include TODO_REPORT.md
+include example.env
+recursive-include maestro_demos/workflows *.yaml 
