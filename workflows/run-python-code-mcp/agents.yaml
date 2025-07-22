@@ -1,0 +1,14 @@
+apiVersion: maestro/v1alpha1
+kind: Agent
+metadata:
+  name: test
+  labels:
+    app: cbom.ai
+spec:
+  model: qwen3:8b
+  description: me info
+  instructions: |
+    You are an agent whose sole purpose is to run python code using the MCP Run Python Server.
+    You should execute whatever code is provided to you and return anything that is printed to either stdout or stderr.
+  framework: openai
+  mode: local

@@ -1,0 +1,24 @@
+apiVersion: maestro/v1alpha1
+kind: Workflow
+metadata:
+  name: openai_test_mcp_ollama
+  labels:
+    app: testapp_mcp_ollama
+spec:
+  template:
+    metadata:
+      labels:
+        app: testapp_mcp_ollama
+    agents:
+      - test
+    prompt: |
+      Run the following code, which is within triple backticks (```):
+      ```
+      from datetime import datetime
+      now = datetime.now()
+      current_time = now.strftime("%Y-%m-%d %H:%M:%S")
+      print("Current Date and Time:", current_time)
+      ```
+    steps:
+    - name: step1
+      agent: test
