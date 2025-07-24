@@ -15,6 +15,9 @@ jobs:
       uses: actions/setup-python@v5
       with:
         python-version: '3.12'
+    - name: Retrieve pyproject toml from maestro repo
+      run: |
+        curl https://raw.githubusercontent.com/AI4quantum/maestro/refs/heads/main/pyproject.toml > pyproject.toml
     - name: Install uv and activate the environment
       uses: astral-sh/setup-uv@v6
       with:
