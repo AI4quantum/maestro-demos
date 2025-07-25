@@ -23,9 +23,9 @@ if [[ -z "$WORKFLOW_YAML" ]]; then
 fi
 
 # Find schema files
-SCHEMA_DIR="$(cd "$REPO_ROOT/schemas" && pwd)"
+SCHEMA_DIR="$(cd "$REPO_ROOT" && pwd)"
 if [ ! -d "$SCHEMA_DIR" ]; then
-    SCHEMA_DIR="$(cd "$REPO_ROOT/schemas" && pwd)"
+    SCHEMA_DIR="$(cd "$REPO_ROOT" && pwd)"
 fi
 AGENT_SCHEMA_PATH="$SCHEMA_DIR/agent_schema.json"
 WORKFLOW_SCHEMA_PATH="$SCHEMA_DIR/workflow_schema.json"
