@@ -31,5 +31,4 @@ jobs:
         maestro --version
     - name: Run demo tests
       run: |
-        export PYTHONPATH=$PYTHONPATH:$(pwd)/src
         ./tools/run-demos.sh
