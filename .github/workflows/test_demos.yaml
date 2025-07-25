@@ -24,11 +24,9 @@ jobs:
         pip install --upgrade pip
         pip install git+https://github.com/AI4quantum/maestro.git@v0.3.0
         pip install "beeai-framework[duckduckgo]"
-    - name: Check maestro CLI installation
+    - name: Check maestro CLI installation & run demo tests
       run: |
         source .venv/bin/activate
         which maestro
         maestro --version
-    - name: Run demo tests
-      run: |
         ./tools/run-demos.sh
