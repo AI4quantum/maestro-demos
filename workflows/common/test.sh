@@ -36,14 +36,14 @@ echo "   - Workflow schema: $WORKFLOW_SCHEMA_PATH"
 
 # Validate YAML files
 echo "📝 Validating agents.yaml..."
-uv run maestro validate "$AGENT_SCHEMA_PATH" "$AGENTS_YAML" || { echo "❌ Failed to validate agents.yaml!"; exit 1; }
+maestro validate "$AGENT_SCHEMA_PATH" "$AGENTS_YAML" || { echo "❌ Failed to validate agents.yaml!"; exit 1; }
 
 echo "📝 Validating workflow.yaml..."
-uv run maestro validate "$WORKFLOW_SCHEMA_PATH" "$WORKFLOW_YAML" || { echo "❌ Failed to validate workflow.yaml!"; exit 1; }
+maestro validate "$WORKFLOW_SCHEMA_PATH" "$WORKFLOW_YAML" || { echo "❌ Failed to validate workflow.yaml!"; exit 1; }
 
 # Run workflow in dry-run mode
 echo "🧪 Running workflow in dry-run mode..."
-echo "" | uv run maestro run --dry-run "$AGENTS_YAML" "$WORKFLOW_YAML" || { echo "❌ Workflow test failed!"; exit 1; }
+echo "" | maestro run --dry-run "$AGENTS_YAML" "$WORKFLOW_YAML" || { echo "❌ Workflow test failed!"; exit 1; }
 
 # If we get here, the dry-run was successful
 echo "✅ Workflow dry-run succeeded!"
@@ -51,7 +51,7 @@ echo "✅ Workflow dry-run succeeded!"
 # If --real-run is specified, run the workflow for real
 if [[ "$2" == "--real-run" ]]; then
     echo "🚀 Running workflow for real..."
-    echo "" | uv run maestro run "$AGENTS_YAML" "$WORKFLOW_YAML" || { echo "❌ Workflow test failed (real run)!"; exit 1; }
+    echo "" | maestro run "$AGENTS_YAML" "$WORKFLOW_YAML" || { echo "❌ Workflow test failed (real run)!"; exit 1; }
     echo "✅ Workflow real run succeeded!"
 fi
 
