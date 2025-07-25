@@ -1,5 +1,9 @@
 #!/bin/bash
 
+#
+REPO_ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
+echo "📂 Found repo root: $REPO_ROOT"
+
 # Get the workflow directory
 WORKFLOW_DIR="${1:-$(cd "$(dirname "$0")" && pwd)}"
 echo "📂 Running tests for: $WORKFLOW_DIR"
@@ -19,9 +23,9 @@ if [[ -z "$WORKFLOW_YAML" ]]; then
 fi
 
 # Find schema files
-SCHEMA_DIR="$(cd "$WORKFLOW_DIR/../../../../schemas" && pwd)"
+SCHEMA_DIR="$(cd "$REPO_ROOT/schemas" && pwd)"
 if [ ! -d "$SCHEMA_DIR" ]; then
-    SCHEMA_DIR="$(cd "$WORKFLOW_DIR/../../../schemas" && pwd)"
+    SCHEMA_DIR="$(cd "$REPO_ROOT/schemas" && pwd)"
 fi
 AGENT_SCHEMA_PATH="$SCHEMA_DIR/agent_schema.json"
 WORKFLOW_SCHEMA_PATH="$SCHEMA_DIR/workflow_schema.json"
