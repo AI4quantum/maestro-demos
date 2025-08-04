@@ -23,9 +23,10 @@ if [[ -z "$WORKFLOW_YAML" ]]; then
 fi
 
 # Find schema files
-SCHEMA_DIR="$(cd "$REPO_ROOT" && pwd)"
+INSTALLED_MAESTRO_ROOT="$(find $REPO_ROOT/.venv/lib -type d -name "maestro")"
+SCHEMA_DIR="$(cd "$INSTALLED_MAESTRO_ROOT/schemas" && pwd)"
 if [ ! -d "$SCHEMA_DIR" ]; then
-    SCHEMA_DIR="$(cd "$REPO_ROOT" && pwd)"
+    SCHEMA_DIR="$(cd "$REPO_ROOT/schemas" && pwd)"
 fi
 AGENT_SCHEMA_PATH="$SCHEMA_DIR/agent_schema.json"
 WORKFLOW_SCHEMA_PATH="$SCHEMA_DIR/workflow_schema.json"

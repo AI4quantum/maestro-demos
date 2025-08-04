@@ -19,10 +19,8 @@ jobs:
       run: |
         python -m venv .venv
         source .venv/bin/activate
-        curl https://raw.githubusercontent.com/AI4quantum/maestro/refs/heads/main/schemas/agent_schema.json > agent_schema.json
-        curl https://raw.githubusercontent.com/AI4quantum/maestro/refs/heads/main/schemas/workflow_schema.json > workflow_schema.json
         pip install --upgrade pip
-        pip install git+https://github.com/AI4quantum/maestro.git@v0.3.0
+        pip install git+https://github.com/AI4quantum/maestro.git@main
         pip install "beeai-framework[duckduckgo]"
     - name: Check maestro CLI installation & run demo tests
       run: |
