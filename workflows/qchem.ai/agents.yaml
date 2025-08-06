@@ -277,7 +277,7 @@ metadata:
 spec:
   model: granite3.3:latest
   framework: beeai
-  mode: remote
+  mode: local
   description: Uses the input to summarize the arxiv papers, news, and patent results
   instructions: |
     You are a paper‐summary agent. You will receive exactly one valid JSON object as your input.
