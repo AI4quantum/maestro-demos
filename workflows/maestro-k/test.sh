@@ -42,9 +42,11 @@ else
     echo "kubectl get mcpservers maestro-k command failed."
     echo "creating..."
     TOOLS_YAML=$(find "$WORKFLOW_DIR" -maxdepth 1 -type f -name "tools.yaml")
+    echo $TOOLS_YAML
     maestro create "$TOOLS_YAML"
     kubectl patch service mcp-maestro-k-proxy -p '{"spec":{"type":"NodePort"}}'
     kubectl patch svc mcp-maestro-k-proxy --type=json -p '[{"op":"replace","path":"/spec/ports/0/nodePort","value":30051}]'
+    sleep 10
 fi
 
 # Find YAML files
