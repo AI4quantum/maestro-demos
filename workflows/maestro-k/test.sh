@@ -43,6 +43,7 @@ else
     echo "creating..."
     TOOLS_YAML=$(find "$WORKFLOW_DIR" -maxdepth 1 -type f -name "tools.yaml")
     echo $TOOLS_YAML
+    find "$WORKFLOW_DIR"
     maestro create "$TOOLS_YAML"
     kubectl patch service mcp-maestro-k-proxy -p '{"spec":{"type":"NodePort"}}'
     kubectl patch svc mcp-maestro-k-proxy --type=json -p '[{"op":"replace","path":"/spec/ports/0/nodePort","value":30051}]'
