@@ -11,6 +11,15 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
+    - name: Install Kind
+      run: |
+        curl -Lo ./kind "https://github.com/kubernetes-sigs/kind/releases/download/v0.20.0/kind-$(uname)-amd64"
+        chmod +x ./kind
+        sudo mv kind /usr/local/bin
+        which kind
+    - name: Create Kind cluster
+      run: |
+        kind create cluster --config tools/kind-config.yaml 
     - name: Set up Python
       uses: actions/setup-python@v5
       with:

@@ -1,0 +1,20 @@
+
+apiVersion: maestro/v1
+kind: Workflow
+metadata:
+  name: maestro-k-workflow
+  labels:
+    app: maestro-k-workflow
+spec:
+  template:
+    metadata:
+      name: maestro-k-workflow
+      labels:
+        app: maestro-k-workflow
+    agents:
+        - maestro-k-agent
+    prompt: "list all vector database available"
+    steps:
+      - name: maestro-k-agent
+        agent: maestro-k-agent
+
