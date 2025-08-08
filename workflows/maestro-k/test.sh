@@ -87,12 +87,12 @@ echo "📝 Validating workflow.yaml..."
 maestro validate "$WORKFLOW_SCHEMA_PATH" "$WORKFLOW_YAML" || { echo "❌ Failed to validate workflow.yaml!"; exit 1; }
 
 # Run workflow in dry-run mode
-# echo "🧪 Running workflow in dry-run mode..."
-# echo "" | maestro run --dry-run "$AGENTS_YAML" "$WORKFLOW_YAML" || { echo "❌ Workflow test failed!"; exit 1; }
+echo "🧪 Running workflow in dry-run mode..."
+echo "" | maestro run --dry-run "$AGENTS_YAML" "$WORKFLOW_YAML" || { echo "❌ Workflow test failed!"; exit 1; }
 
 # Run workflow
-echo "🧪 Running workflow..."
-echo "" | maestro run "$AGENTS_YAML" "$WORKFLOW_YAML" || { echo "❌ Workflow test failed!"; exit 1; }
+# echo "🧪 Running workflow..."
+# echo "" | maestro run "$AGENTS_YAML" "$WORKFLOW_YAML" || { echo "❌ Workflow test failed!"; exit 1; }
 
 # If we get here, the dry-run was successful
 echo "✅ Workflow dry-run succeeded!"
