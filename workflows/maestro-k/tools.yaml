@@ -4,7 +4,7 @@ metadata:
   name: maestro-k
   namespace: default
 spec:
-  image: ghcr.io/akihikokuroda/maestro-knowledge:latest
+  image: ghcr.io/ai4quantum/maestro-knowledge:latest
   transport: streamable-http
   targetPort: 8030
   permissionProfile:

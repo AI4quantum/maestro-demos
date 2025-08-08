@@ -14,7 +14,7 @@ This demo shows how to use Maestro to create a workflow that checks and reports 
 
 Install maestro:
 ```bash
-pip install git+https://github.com/AI4quantum/maestro.git@v0.1.0
+pip install git+https://github.com/AI4quantum/maestro.git@v0.5.0
 ```
 
 **Note**: This repository contains demos for Maestro. The main Maestro project can be found at [https://github.com/AI4quantum/maestro](https://github.com/AI4quantum/maestro).
@@ -32,11 +32,15 @@ maestro_k_agent->>maestro_k_agent: maestro-k-agent
 
 ## Getting Started
 
-* Run a local instance of the [bee-stack](https://github.com/AI4quantum/bee-stack/blob/main/README.md)
-
 * Verify a valid llm is available
 
 * Configure environmental variables: `cp demos/example.env .env`
+
+## Deploy Maestro-knowledge tool
+
+```bash
+maestro create ./workflows/maestro-k/tools.yaml
+```
 
 ## Running workflow
 
