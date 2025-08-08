@@ -45,9 +45,9 @@ else
     echo $TOOLS_YAML
     find "$WORKFLOW_DIR"
     maestro create "$TOOLS_YAML"
+    sleep 10
     kubectl patch service mcp-maestro-k-proxy -p '{"spec":{"type":"NodePort"}}'
     kubectl patch svc mcp-maestro-k-proxy --type=json -p '[{"op":"replace","path":"/spec/ports/0/nodePort","value":30051}]'
-    sleep 10
 fi
 
 # Find YAML files
