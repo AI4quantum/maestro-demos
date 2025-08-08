@@ -32,15 +32,13 @@ maestro_k_agent->>maestro_k_agent: maestro-k-agent
 
 ## Getting Started
 
-* Verify a valid llm is available
+* Verify a valid llm is available (default: "llama3.1:latest")
 
 * Configure environmental variables: `cp demos/example.env .env`
 
-## Deploy Maestro-knowledge tool
+* kubernetes cluster is available
 
-```bash
-maestro create ./workflows/maestro-k/tools.yaml
-```
+* kubectl is installed
 
 ## Running workflow
 
@@ -49,12 +47,8 @@ Assuming you are in maestro-demo level:
 To run the workflow:
 
 ```bash
-maestro run ./workflows/maestro-k/agents.yaml ./workflows/maestro-k/workflow.yaml
+./workflows/maestro-k/test.sh
 ```
 
-OR
+By default, this demo uses a mock agent.  To run with real agent, commect out line 90-91 and enable line 94-95 in workflow/maestro-k/test.sh
 
-Directly deploy the workflow via streamlit:
-```bash
-maestro deploy ./workflows/maestro-k/agents.yaml ./demos/workflows/maestro-k/workflow.yaml
-```
