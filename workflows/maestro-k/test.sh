@@ -34,7 +34,8 @@ if kubectl get crd mcpservers.toolhive.stacklok.dev  > /dev/null 2>&1; then
 else
     echo "kubectl get crd mcpservers command failed."
     echo "installing..."
-    helm upgrade -i toolhive-operator-crds oci://ghcr.io/stacklok/toolhive/toolhive-operator-crds	
+    helm upgrade -i toolhive-operator-crds oci://ghcr.io/stacklok/toolhive/toolhive-operator-crds
+    helm upgrade -i toolhive-operator oci://ghcr.io/stacklok/toolhive/toolhive-operator -n toolhive-system --create-namespace
 fi
 if kubectl get mcpservers maestro-k  > /dev/null 2>&1; then
     echo "kubectl get mcpservers maestro-k command was successful."
