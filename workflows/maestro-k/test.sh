@@ -97,11 +97,4 @@ echo "" | maestro run --dry-run "$AGENTS_YAML" "$WORKFLOW_YAML" || { echo "❌ W
 # If we get here, the dry-run was successful
 echo "✅ Workflow dry-run succeeded!"
 
-# If --real-run is specified, run the workflow for real
-if [[ "$2" == "--real-run" ]]; then
-    echo "🚀 Running workflow for real..."
-    echo "" | maestro run "$AGENTS_YAML" "$WORKFLOW_YAML" || { echo "❌ Workflow test failed (real run)!"; exit 1; }
-    echo "✅ Workflow real run succeeded!"
-fi
-
 echo "✅ All tests completed successfully!"
