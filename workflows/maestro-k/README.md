@@ -52,3 +52,16 @@ To run the workflow:
 
 By default, this demo uses a mock agent.  To run with real agent, commect out line 90-91 and enable line 94-95 in workflow/maestro-k/test.sh
 
+## Clean up
+
+To stop the mcp server
+
+```bash
+kubectl delete mcpserver maestro-k
+```
+
+To delete ToolHive operator
+```bash
+helm uninstall toolhive-operator -n toolhive-system
+helm uninstall toolhive-operator-crds
+```
