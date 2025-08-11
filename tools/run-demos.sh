@@ -78,7 +78,7 @@ find "$WORKFLOWS_DIR" -mindepth 1 -type d -print0 | while IFS= read -r -d '' dem
 
         if [[ -x "$demo/test.sh" ]]; then
             echo "🧪 Running custom test.sh for demo..."
-            bash "$demo/test.sh" "$COMMON_DIR/test.sh" "$demo" || { echo "❌ custom test.sh failed for demo at $demo"; exit 1; }
+            bash "$demo/test.sh" "$demo" || { echo "❌ custom test.sh failed for demo at $demo"; exit 1; }
         else
             echo "🧪 Running common test.sh for demo..."
             MAESTRO_DEMO_OLLAMA_MODEL="ollama/llama3.2:3b" bash "$COMMON_DIR/test.sh" "$demo" <<< "" || { echo "❌ test.sh failed for demo at $demo"; exit 1; }
