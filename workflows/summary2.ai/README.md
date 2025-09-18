@@ -1,5 +1,19 @@
 # Summary2 AI – arXiv URL → Clean Text → LLM Summary
 
+## Mermaid Diagram
+
+<!-- MERMAID_START -->
+```mermaid
+sequenceDiagram
+participant Normalize URL
+participant Extract Clean Text
+participant Summarize Clean Text
+Normalize URL->>Extract Clean Text: Step1
+Extract Clean Text->>Summarize Clean Text: Step2
+```
+<!-- MERMAID_END -->
+
+Pipeline stages:
 - arxiv-normalize-url: Normalize a full arXiv URL or ID to a canonical ID.
 - arxiv-extract-fulltext: Download PDF, extract with Docling, remove references/boilerplate.
 - summarize-clean-text: Summarize the cleaned text with `gpt-oss:latest`.
