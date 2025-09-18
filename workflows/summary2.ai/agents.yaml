@@ -128,3 +128,19 @@ spec:
     pdf = _download_arxiv_pdf(arxiv_id)
     raw = _extract_text_with_docling(pdf)
     output = _clean_research_text(raw)
+
+---
+apiVersion: maestro/v1alpha1
+kind: Agent
+metadata:
+  name: summarize-clean-text
+  labels:
+    app: summary-pipeline
+spec:
+  model: gpt-oss:latest
+  framework: openai
+  mode: local
+  description: Summarize cleaned research text into a concise, structured brief.
+  instructions: |
+    You receive a single string input which is the cleaned full text of a research paper.
+    Produce a summary (that relatively isn't too hard or too long to understand).

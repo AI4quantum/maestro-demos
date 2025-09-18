@@ -13,10 +13,12 @@ spec:
     agents:
       - arxiv-normalize-url
       - arxiv-extract-fulltext
-      - arxiv-save-cleantext
+      - summarize-clean-text
     prompt: https://arxiv.org/abs/1706.03762
     steps:
       - name: Normalize URL
         agent: arxiv-normalize-url
       - name: Extract Clean Text
         agent: arxiv-extract-fulltext
+      - name: Summarize Clean Text
+        agent: summarize-clean-text
