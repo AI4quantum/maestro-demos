@@ -1,0 +1,24 @@
+apiVersion: maestro/v1alpha1
+kind: Workflow
+metadata:
+  name: summary-ai-fulltext
+  labels:
+    project: maestro-demo
+spec:
+  template:
+    metadata:
+      name: summary-ai-fulltext
+      labels:
+        project: maestro-demo
+    agents:
+      - arxiv-normalize-url
+      - arxiv-extract-fulltext
+      - summarize-clean-text
+    prompt: https://arxiv.org/abs/1706.03762
+    steps:
+      - name: Normalize URL
+        agent: arxiv-normalize-url
+      - name: Extract Clean Text
+        agent: arxiv-extract-fulltext
+      - name: Summarize Clean Text
+        agent: summarize-clean-text

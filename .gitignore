@@ -3,6 +3,8 @@ __pycache__/
 *.py[codz]
 *$py.class
 
+# Maestro runtime artifacts
+agents.db
 # C extensions
 *.so
 
