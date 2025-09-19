@@ -1,194 +1,146 @@
 apiVersion: maestro/v1alpha1
 kind: Agent
 metadata:
-  name: All Papers
+  name: arxiv-normalize-url
   labels:
-    app: mas-example 
+    app: summary-pipeline
 spec:
-  model: llama3.1
-  framework: beeai
-  mode: remote
-  description: Uses the fetch papers tool in order to retreive the recently released papers given a subject.
-  instructions: |
-    Input:
-              • category (string) # e.g. "quantum-ph"
-              • max_results (int)  # e.g. "5" for the 5 most recent papers.
-
-    Task:
-    Call the fetch papers tool to search for all papers on `category` published. All the functionality is already implemented in the funciton, simply execute the function with the given parameters as the input, and then return the output (which should be titles of research papers) into a list.
-    Directly print out the list in the output.
+  framework: code
+  mode: local
+  description: Normalize an arXiv URL/ID to a canonical arXiv ID string.
+  instructions: Use input[0] and set output to the canonical arXiv ID.
   code: |
-    import urllib.request
-    import xml.etree.ElementTree as ET
-    from datetime import datetime, timedelta
+    import re
 
-    def fetch_arxiv_papers(subject: str, max_results: int = 25) -> list[str]:
-        """
-        Fetches titles of papers in the given arXiv subject that were
-        submitted *yesterday* (UTC).
+    def extract_arxiv_id(url: str) -> str:
+        patterns = [
+            r"arxiv\.org/abs/([0-9]{4}\.[0-9]{4,5}(?:v[0-9]+)?)",
+            r"arxiv\.org/pdf/([0-9]{4}\.[0-9]{4,5}(?:v[0-9]+)?)",
+            r"^([0-9]{4}\.[0-9]{4,5}(?:v[0-9]+)?)$"
+        ]
+        for pattern in patterns:
+            m = re.search(pattern, url)
+            if m:
+                arxiv_id = m.group(1)
+                return re.sub(r"v[0-9]+$", "", arxiv_id)
+        return ""
 
-        Args:
-            subject (str): e.g. "cs.AI", "quant-ph", etc.
-            max_results (int): how many recent papers to fetch for filtering.
-
-        Returns:
-            A list of paper titles submitted yesterday.
-        """
-        yesterday = (datetime.utcnow().date() - timedelta(days=1)).isoformat()
-        url = (
-            "http://export.arxiv.org/api/query?"
-            f"search_query=cat:{subject}"
-            f"&sortBy=submittedDate"
-            f"&sortOrder=descending"
-            f"&max_results={max_results}"
-        )
-        with urllib.request.urlopen(url) as resp:
-            xml_data = resp.read()
-        root = ET.fromstring(xml_data)
-        ns = {"atom": "http://www.w3.org/2005/Atom"}
-
-        titles = []
-        for entry in root.findall("atom:entry", ns):
-            pub = entry.find("atom:published", ns).text
-            if pub.startswith(yesterday):
-                title = entry.find("atom:title", ns).text.strip().replace("\n", " ")
-                titles.append(title)
-
-        return titles
-  tools:
-    - 'find_arxiv_papers'
+    url_or_id = input[0]
+    output = extract_arxiv_id(url_or_id)
 
 ---
 apiVersion: maestro/v1alpha1
 kind: Agent
 metadata:
-  name: get metadata
+  name: arxiv-extract-fulltext
   labels:
-    app: mas-example 
+    app: summary-pipeline
 spec:
-  model: llama3.1
-  framework: beeai
-  mode: remote
-  description: "Retrieve metadata for a given arxiv paper"
-  instructions: |
-    The input will be a title (in list format) to a research paper. Extract this from the list and use it as the input for a parameter for the function in step 1.  Example given input might be like this: ["This is an example input title"]. We only want to extract and use the string inside, "This is an exmaple input title" and set this as our title.
-
-    Step1:
-    Use the *get_metadata tool*, passing in the given title to retreive the abstract for the paper.  The function call should just be `get_metadata_by_title(title)`. 
-
-    Currently you are using the Thought, Result, and Reason step which is the final output that is generated. However, I want you to stop at the Result step (which should directly just be the output of the function). *STRICTLY output the result of the function and nothing else*
-    Example output that the user should see:
-        {
-          "title": inputted title,
-          "authors": [
-            authors retrieved by the function
-          ],
-          "published": date retrieved by the function,
-          "abstract": abstract retrieved by the function
-        }
+  framework: code
+  mode: local
+  description: Download by arXiv URL or ID, extract with Docling, clean boilerplate, output cleaned text.
+  instructions: Use input[0] (URL or ID). Normalize to an arXiv ID and set output to the cleaned text.
   code: |
-    import arxiv
-    from typing import Optional
+    import os
+    import re
+    import requests
+    from docling.document_converter import DocumentConverter, PdfFormatOption
+    from docling.datamodel.base_models import InputFormat
+    from docling.datamodel.pipeline_options import PdfPipelineOptions
 
-    def get_metadata_by_title(title: str) -> Optional[str]:
-        """
-        Given the exact title of an arXiv paper, fetch its abstract.
-        Returns None if no match is found.
-        """
-        client = arxiv.Client()
-        search = arxiv.Search(
-            query=f'ti:"{title}"',
-            max_results=1
-        )
-        result = next(client.results(search), None)
-        if not result:
-            return None
-        return {
-            "title":     result.title,
-            "authors":   [a.name for a in result.authors],
-            "published": result.published.strftime("%Y-%m-%d"),
-            "abstract":  result.summary.strip()
-        }
-  tools:
-    - 'get_metadata_by_title'
+    def _extract_arxiv_id(url_or_id: str) -> str:
+        patterns = [
+            r"arxiv\.org/abs/([0-9]{4}\.[0-9]{4,5}(?:v[0-9]+)?)",
+            r"arxiv\.org/pdf/([0-9]{4}\.[0-9]{4,5}(?:v[0-9]+)?)",
+            r"^([0-9]{4}\.[0-9]{4,5}(?:v[0-9]+)?)$",
+        ]
+        for p in patterns:
+            m = re.search(p, url_or_id)
+            if m:
+                return re.sub(r"v[0-9]+$", "", m.group(1))
+        return url_or_id.strip()
+
+    def _download_arxiv_pdf(arxiv_id: str, download_dir: str = "/tmp"):
+        url = f"https://arxiv.org/pdf/{arxiv_id}.pdf"
+        r = requests.get(url, headers={"User-Agent": "Mozilla/5.0"}, timeout=30)
+        r.raise_for_status()
+        pdf_path = os.path.join(download_dir, f"{arxiv_id}.pdf")
+        with open(pdf_path, "wb") as f:
+            f.write(r.content)
+        return pdf_path
+
+    def _extract_text_with_docling(pdf_path: str) -> str:
+        opts = PdfPipelineOptions()
+        opts.do_ocr = True
+        opts.do_table_structure = True
+        opts.table_structure_options.do_cell_matching = True
+        fmt = PdfFormatOption(pipeline_options=opts)
+        conv = DocumentConverter(format_options={InputFormat.PDF: fmt})
+        result = conv.convert(pdf_path)
+        return result.document.export_to_text()
+
+    def _clean_research_text(text: str) -> str:
+        s = text.replace("\r\n", "\n").replace("\r", "\n")
+        s = re.sub(r"(\w+)-\n(\w+)", r"\1\2\n", s)
+        lines = s.splitlines()
+
+        n = len(lines)
+        cutoff = int(n * 0.6)
+        cut_idx = None
+        for i in range(cutoff, n):
+            raw = lines[i].strip()
+            t = re.sub(r"^[#\s\-\d\.:\)]+", "", raw).lower()
+            if re.match(r"^(references|bibliography)\b", t) or re.match(r"^(acknowledgments|acknowledgements|appendix)\b", t):
+                cut_idx = i
+                break
+        if cut_idx is not None:
+            lines = lines[:cut_idx]
+        else:
+            ref_bullet = re.compile(r"^\s*([\-•]\s*\[\d+\]|\[\d+\]|\d+\.|\d+\))\s+")
+            for i in range(cutoff, n):
+                window = lines[i:i+7]
+                hits = sum(1 for ln in window if ref_bullet.match(ln or ""))
+                if hits >= 3:
+                    lines = lines[:i]
+                    break
+
+        cleaned = []
+        for ln in lines:
+            t = ln.strip()
+            if not t:
+                cleaned.append("")
+                continue
+            if re.fullmatch(r"https?://\S+", t):
+                continue
+            if re.fullmatch(r"\d+|\d+\s*/\s*\d+|(?i:page)\s*\d+(\s*(?i:of)\s*\d+)?", t):
+                continue
+            if re.match(r"^(Figure|Fig\.|Table)\s+\d+([:.\s]|$)", t, re.IGNORECASE):
+                continue
+            t = re.sub(r"\S+@\S+", "", t)
+            t = re.sub(r"\s{2,}", " ", t).strip()
+            cleaned.append(t)
+
+        s = "\n".join(cleaned)
+        s = re.sub(r"\n{3,}", "\n\n", s).strip()
+        return s
+
+    arxiv_id = _extract_arxiv_id(input[0])
+    pdf = _download_arxiv_pdf(arxiv_id)
+    raw = _extract_text_with_docling(pdf)
+    output = _clean_research_text(raw)
 
 ---
 apiVersion: maestro/v1alpha1
 kind: Agent
 metadata:
-  name: generate summary
+  name: summarize-clean-text
   labels:
-    app: mas-example 
+    app: summary-pipeline
 spec:
-  model: llama3.1
-  framework: beeai
-  mode: remote
-  description: "Generate summary using metadata"
+  model: gpt-oss:latest
+  framework: openai
+  mode: local
+  description: Summarize cleaned research text into a concise, structured brief.
   instructions: |
-    You are a paper‐summary agent. You will receive exactly one valid JSON object as your input. This JSON object contains metadata about a research paper, including the title, authors, publication date, and abstract.
-    Your task is to output a two-paragraph plain-text summary in the following format using the LLM tool:
-
-    **Header Line:**
-    `{title}, by {Author1, Author2, …} (Published: {published})`
-
-    **Expanded Summary:**
-
-    **Paragraph 1:** Begin by restating the core topic and main objective of the paper based on the provided abstract. Then, expand on the key findings, results, or contributions mentioned in the abstract. Use clear and concise language, aiming to provide a more detailed explanation than the original abstract while maintaining accuracy.
-
-    **Paragraph 2:** Identify and explain any crucial technical terms, methodologies, or concepts that are essential for understanding the paper's context and significance. Frame these explanations in a way that a general technical reader, who may not be an expert in the specific field, can grasp their meaning and relevance to the research.
-
-    **Constraints:**
-    - Do not output JSON or attempt to look up anything.
-    - Do not include extra sections or bullet points within the paragraphs (except for the header line format).
-    - Ensure the full summary is approximately 150–200 words.
-
-  tools: 
-    - 'LLM'
-
----
-apiVersion: maestro/v1alpha1
-kind: Agent
-metadata:
-  name: slack
-  labels:
-    app: slack-example
-    custom_agent: slack_agent
-spec:
-  model: dummy
-  framework: custom
-  mode: remote
-  description: slack agent
-  instructions: post a message to slack
-
----
-apiVersion: maestro/v1alpha1
-kind: Agent
-metadata:
-  name: Query Interpreter
-  labels:
-    app: mas-example 
-spec:
-  model: llama3.1
-  framework: beeai
-  mode: remote
-  description: Parses user input, which may be an English description or function call
-  instructions: |
-    You will receive a single input, which needs to be formatted as a function call in the output. The input will either be:
-        1. A natural language request to search arXiv, e.g.:
-          “I want to search the stat.ML category and return the n most recent papers”
-        2. A direct function call, e.g.:
-          fetch_arxiv_papers(subject="quant-ph", max_results=n)
-        
-    Your job is to *output exactly one line (which is the fetch_arxiv_papers function call and nothing else)*, **Do not** introduce any new parameters in the function, and directly copy the function call here, replacing category and count:
-    `fetch_arxiv_papers(subject="CATEGORY", max_results=COUNT)` call.
-    **Do not** output any other text, explanation, or formatting.
-        
-    **Examples:**
-        ```
-        Input: I want to search the stat.ML category and return the 1st most recent paper
-        Output: fetch_arxiv_papers(subject="stat.ML", max_results=1)
-
-        Input: fetch_arxiv_papers(subject="quant-ph", max_results=5)
-        Output: fetch_arxiv_papers(subject="quant-ph", max_results=5)
-  tools:
-    - 'LLM'
+    You receive a single string input which is the cleaned full text of a research paper.
+    Produce a summary (that relatively isn't too hard or too long to understand).
