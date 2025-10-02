@@ -3,11 +3,11 @@ kind: Agent
 metadata:
   name: Temperature Agent
   labels:
-    app: label value with space
+    app: mas-example
 spec:
-  model: "llama3.1:latest"
+  model: llama3.1
   framework: beeai
-  mode: remote
+  mode: local
   description: Get the current weather
   tools:
     - code_interpreter
@@ -21,9 +21,9 @@ metadata:
   labels:
     app: mas-example
 spec:
-  model: "llama3.1:latest"
+  model: llama3.1
   framework: beeai
-  mode: remote
+  mode: local
   description: Is the current temperature hotter than usual?
   tools:
     - code_interpreter
@@ -37,20 +37,3 @@ spec:
     Compare input against historical temperature (lets say 55) in input location.
 
     Output: The current temperature is colder than the historical temperature.
-
-# ---
-# apiVersion: maestro/v1alpha1
-# kind: Agent
-# metadata:
-#   name: score
-#   labels: 
-#     app: test-example
-#     custom_agent: scoring_agent
-# spec:
-#   model: deepseek-r1:latest
-#   framework: custom
-#   mode: remote
-#   description: gets score, relevance/hallucination using defined model
-#   instructions: evaluates the response using Opik
-
-
