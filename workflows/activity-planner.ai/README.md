@@ -14,7 +14,7 @@ This demo shows how to use Maestro to create an activity planner.
 
 1. Install maestro:
 ```bash
-pip install git+https://github.com/AI4quantum/maestro.git@v0.1.0
+pip install git+https://github.com/AI4quantum/maestro.git@v0.8.0
 ```
 
 **Note**: This repository contains demos for Maestro. The main Maestro project can be found at [https://github.com/AI4quantum/maestro](https://github.com/AI4quantum/maestro).
@@ -55,7 +55,7 @@ hot_activities->>hot_activities: exit
 
 * Install [maestro](https://github.com/AI4quantum/maestro):
    ```bash
-   pip install git+https://github.com/AI4quantum/maestro.git@v0.1.0
+   pip install git+https://github.com/AI4quantum/maestro.git@v0.8.0
    ```
 
    **Note**: This repository contains demos for Maestro. The main Maestro project can be found at [https://github.com/AI4quantum/maestro](https://github.com/AI4quantum/maestro).

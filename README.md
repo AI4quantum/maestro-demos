@@ -15,12 +15,12 @@ This repository contains:
 To use these demos, you'll need to install Maestro first:
 
 ```bash
-pip install git+https://github.com/AI4quantum/maestro.git@v0.5.0
+pip install git+https://github.com/AI4quantum/maestro.git@v0.8.0
 ```
 
 Note: If using scoring or crewai agents, install:
 ```bash
-pip install "maestro[crewai] @ git+https://github.com/AI4quantum/maestro.git@v0.5.0"
+pip install "maestro[crewai] @ git+https://github.com/AI4quantum/maestro.git@v0.8.0"
 ```
 
 ## Getting Started
