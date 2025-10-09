@@ -2,6 +2,9 @@ apiVersion: maestro/v1alpha1
 kind: Agent
 metadata:
   name: portfolio
+  dependencies: |
+    qiskit_ibm_catalog
+    pandas
   labels:
     app: portfolio optimizer
 spec:
