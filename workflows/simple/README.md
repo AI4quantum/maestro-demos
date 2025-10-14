@@ -13,7 +13,7 @@ This demo shows how to use Maestro to create a simple example workflow.
 
 **Note**: This repository contains demos for Maestro. The main Maestro project can be found at [https://github.com/AI4quantum/maestro](https://github.com/AI4quantum/maestro).
 ```bash
-pip install git+https://github.com/ajbozarth/maestro.git
+pip install git+https://github.com/AI4quantum/maestro.git@v0.8.0
 ```
 
 ## Running the workflow

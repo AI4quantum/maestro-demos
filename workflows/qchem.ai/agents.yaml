@@ -2,6 +2,8 @@ apiVersion: maestro/v1alpha1
 kind: Agent
 metadata:
   name: quri agent
+  dependencies: |
+    qiskit_ibm_catalog
   labels:
     app: mas-example
 spec:
@@ -63,6 +65,8 @@ apiVersion: maestro/v1alpha1
 kind: Agent
 metadata:
   name: mock quri
+  dependencies: |
+    ast
   labels:
     app: mas-example
 spec:
@@ -87,6 +91,8 @@ spec:
 apiVersion: maestro/v1alpha1
 kind: Agent
 metadata:
+  dependencies: |
+    openfermion
   name: open fermion
   labels:
     app: mas-example
@@ -124,6 +130,9 @@ apiVersion: maestro/v1alpha1
 kind: Agent
 metadata:
   name: pubchem agent
+  dependencies: |
+    rdkit
+    pubchempy
   labels:
     app: mas-example
 spec:
@@ -166,6 +175,10 @@ apiVersion: maestro/v1alpha1
 kind: Agent
 metadata:
   name: news patents papers
+  dependencies: |
+    arxiv
+    requests
+    GoogleNews
   labels:
     app: mas-example 
 spec:

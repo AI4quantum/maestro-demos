@@ -33,6 +33,9 @@ apiVersion: maestro/v1alpha1
 kind: Agent
 metadata:
   name: arxiv-extract-fulltext
+  dependencies: |
+    requests
+    docling
   labels:
     app: summary-pipeline
 spec:
