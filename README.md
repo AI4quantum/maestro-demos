@@ -1,3 +1,8 @@
+> ⚠️ **Archived Repository**
+>
+> This project is no longer maintained and has been archived as of April 2026.
+> - No new features or bug fixes will be accepted.
+
 # Maestro Demos
 
 This repository contains demos and use cases for [Maestro](https://github.com/AI4quantum/maestro), a tool for managing and running AI agents and workflows. This repository was originally part of the demos directory in the main Maestro project and has been extracted as a standalone repository for easier access and contribution.
